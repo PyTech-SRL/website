@@ -5,6 +5,8 @@ from pathlib import Path
 from odoo import models
 from odoo.http import request
 
+from odoo.addons.website.models import ir_http
+
 
 class IrHttp(models.AbstractModel):
     _inherit = "ir.http"
@@ -26,6 +28,9 @@ class IrHttp(models.AbstractModel):
     @classmethod
     def _check_require_auth(cls):
         # if not website request - skip
+        if not ir_http.get_request_website():
+            return None
+
         website = request.env["website"].sudo().get_current_website()
         if not website:
             return None
